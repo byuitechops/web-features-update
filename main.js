@@ -1,28 +1,49 @@
 /*eslint-env node, es6*/
 
-/* Module Description */
+/* Makes changes to the web features in Canvas */
 
-/* Put dependencies here */
-
-/* Include this line only if you are going to use Canvas API */
-// const canvas = require('canvas-wrapper');
-
-/* View available course object functions */
-// https://github.com/byuitechops/d2l-to-canvas-conversion-tool/blob/master/documentation/classFunctions.md
+const canvas = require('canvas-wrapper'),
+    async = require('async');
 
 module.exports = (course, stepCallback) => {
-    /* Create the module report so that we can access it later as needed.
-    This MUST be done at the beginning of each child module. */
-    course.addModuleReport('moduleName');
+    course.addModuleReport('web-features-update');
 
-    /* Used to log successful actions */
-    course.success('moduleName', 'moduleName successfully ...');
+    //1. makeChanges to the specified files
+    function divWrap(htmlBody) {}
+    var changeFunctions = [divWrap];
 
-    /* How to report an error (Replace "moduleName") */
-    // course.throwErr('moduleName', e);
+    function makeChanges(callback) {
+        //I want to specify this callback... how do I do that?
+        async.waterfall(changeFunctions, function (err, results) {
+            course.success('web-features-update', 'successfully')
+            callback(null)
+        })
+    }
+    //2. Complete these changes on all the specified content
+    function getPages(callbackPages) {
+        var pagesApi = '',
+            changesMade = { /*some object here*/ };
+        canvas.get(contentUrl, function (err, pages) {
+            if (err) {
+                console.log('getContent Error', err)
+                callbackPages(err);
+                return;
+            }
+            makeChanges(callbackPages);
+            canvas.put(pagesApi, changesMade, function (err, body) {
+                /*err handling here*/
+            });
+        });
+    }
 
-    /* You should never call the stepCallback with an error. We want the
-    whole program to run when testing so we can catch all existing errors */
+    //3. Call everything to do all of it.
+    var everything = [pages, quizzes, files, assignments];
 
+    function doEverything(everything, function (err, result) {
+        if (err) {
+            course.throwErr('web-features-update', err)
+        }
+        course.success('web-features-update', 'process complete!')
+    })
     stepCallback(null, course);
 };
