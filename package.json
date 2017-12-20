@@ -25,5 +25,5 @@
         "url": "https://github.com/byuitechops/web-features-update/issues"
     },
     "homepage": "https://github.com/byuitechops/web-features-update#readme",
-    "childType": "preImport"
+    "childType": "postImport"
 }
