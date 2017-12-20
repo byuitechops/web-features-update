@@ -26,19 +26,22 @@ module.exports = (course, stepCallback) => {
 
         /* Push the changed HTML to canvas */
         function setPage(page, eachCallback) {
-            /* Get the page so we can get its body (which isn't included when listing all pages) */
-            canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
-                if (err) course.throwErr('web-features-update', err);
-                else {
-                    /* Set the page with the new HTML */
-                    canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
+            if (page.front_page == true) {
+                eachCallback(null);
+            } else {
+                /* Get the page so we can get its body (which isn't included when listing all pages) */
+                canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
+                    if (err) course.throwErr('web-features-update', err);
+                    else {
+                        /* Set the page with the new HTML */
+                        canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
                             'wiki_page[body]': wrapHTML(pageDetails[0].body) // Wrap the HTML before sending it
                         },
                         (err2, changedPage) => {
                             if (err2) eachCallback(err2);
                             else {
                                 course.success('web-features-update',
-                                    `PAGE | ${page.title} HTML wrapped with a "byui" div.`);
+                                `PAGE | ${page.title} HTML wrapped with a "byui" div.`);
                                 course.info['Updated HTML'].push({
                                     type: 'page',
                                     title: page.title
@@ -46,8 +49,9 @@ module.exports = (course, stepCallback) => {
                                 eachCallback(null);
                             }
                         });
-                }
-            });
+                    }
+                });
+            }
         }
 
         /* For each page ... */
