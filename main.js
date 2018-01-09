@@ -10,7 +10,9 @@ module.exports = (course, stepCallback) => {
     course.newInfo('Updated HTML', []);
 
     /* Give us the class for the course code */
-    var courseCode = course.info.fileName.split('.zip')[0].toLowerCase().replace(/\s+/g, '');
+    var courseCode = course.info.fileName.split(' ');
+    courseCode = courseCode[0] + courseCode[1];
+    courseCode = courseCode.toLowerCase().replace(/\s+/g, '');
 
     /* Slaps our div around the html */
     function wrapHTML(html) {
