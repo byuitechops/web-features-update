@@ -13,7 +13,7 @@ module.exports = (course, stepCallback) => {
     var courseCode = course.info.fileName.split(' ');
     courseCode = courseCode[0] + courseCode[1];
     courseCode = courseCode.toLowerCase().replace(/\s+/g, '');
-    courseCode = courseCode.replace(/\:/g, '');
+    courseCode = courseCode.replace(/:/g, '');
 
     /* Slaps our div around the html */
     function wrapHTML(html) {
