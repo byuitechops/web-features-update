@@ -9,9 +9,12 @@ module.exports = (course, stepCallback) => {
     course.addModuleReport('web-features-update');
     course.newInfo('Updated HTML', []);
 
+    /* Give us the class for the course code */
+    var courseCode = course.info.fileName.split('.zip')[0].toLowerCase().replace(/\s+/g, '');
+
     /* Slaps our div around the html */
     function wrapHTML(html) {
-        return `<div class="byui">${html}</div>`;
+        return `<div class="byui ${courseCode}">${html}</div>`;
     }
 
     /* *** PAGES *** */
@@ -41,7 +44,7 @@ module.exports = (course, stepCallback) => {
                             if (err2) eachCallback(err2);
                             else {
                                 course.success('web-features-update',
-                                `PAGE | ${page.title} HTML wrapped with a "byui" div.`);
+                                `PAGE | ${page.title} HTML wrapped with a the styling div.`);
                                 course.info['Updated HTML'].push({
                                     type: 'page',
                                     title: page.title
@@ -80,7 +83,7 @@ module.exports = (course, stepCallback) => {
                     if (err) eachCallback(err);
                     else {
                         course.success('web-features-update',
-                            `QUIZ | ${quiz.title} HTML wrapped with a "byui" div.`);
+                            `QUIZ | ${quiz.title} HTML wrapped with the styling div.`);
                         course.info['Updated HTML'].push({
                             type: 'quiz',
                             title: quiz.title
@@ -115,7 +118,7 @@ module.exports = (course, stepCallback) => {
                     if (err) eachCallback(err);
                     else {
                         course.success('web-features-update',
-                            `DISCUSSION | ${discussion.title} HTML wrapped with a "byui" div.`);
+                            `DISCUSSION | ${discussion.title} HTML wrapped with the styling div.`);
                         course.info['Updated HTML'].push({
                             type: 'discussion',
                             title: discussion.title
@@ -154,7 +157,7 @@ module.exports = (course, stepCallback) => {
                     if (err) eachCallback(err);
                     else {
                         course.success('web-features-update',
-                        `ASSIGNMENT | ${assignment.name} HTML wrapped with a "byui" div.`);
+                        `ASSIGNMENT | ${assignment.name} HTML wrapped with the styling div.`);
                         course.info['Updated HTML'].push({
                             type: 'assignment',
                             title: assignment.name
@@ -189,7 +192,7 @@ module.exports = (course, stepCallback) => {
             course.throwErr('web-features-update', err)
             stepCallback(null, course);
         } else {
-            course.success('web-features-update', 'HTML has been updated with the <div class="byui"> tag.')
+            course.success('web-features-update', 'HTML has been updated with the <div class="byui [coursecode]"> tag.')
             stepCallback(null, course);
         }
     })
