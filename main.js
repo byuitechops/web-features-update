@@ -13,6 +13,7 @@ module.exports = (course, stepCallback) => {
     var courseCode = course.info.fileName.split(' ');
     courseCode = courseCode[0] + courseCode[1];
     courseCode = courseCode.toLowerCase().replace(/\s+/g, '');
+    courseCode = courseCode.replace(/\:/g, '');
 
     /* Slaps our div around the html */
     function wrapHTML(html) {
@@ -31,22 +32,19 @@ module.exports = (course, stepCallback) => {
 
         /* Push the changed HTML to canvas */
         function setPage(page, eachCallback) {
-            if (page.front_page == true) {
-                eachCallback(null);
-            } else {
-                /* Get the page so we can get its body (which isn't included when listing all pages) */
-                canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
-                    if (err) course.throwErr('web-features-update', err);
-                    else {
-                        /* Set the page with the new HTML */
-                        canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
+            /* Get the page so we can get its body (which isn't included when listing all pages) */
+            canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
+                if (err) course.throwErr('web-features-update', err);
+                else {
+                    /* Set the page with the new HTML */
+                    canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
                             'wiki_page[body]': wrapHTML(pageDetails[0].body) // Wrap the HTML before sending it
                         },
                         (err2, changedPage) => {
                             if (err2) eachCallback(err2);
                             else {
                                 course.success('web-features-update',
-                                `PAGE | ${page.title} HTML wrapped with a the styling div.`);
+                                    `PAGE | ${page.title} HTML wrapped with a the styling div.`);
                                 course.info['Updated HTML'].push({
                                     type: 'page',
                                     title: page.title
@@ -54,9 +52,8 @@ module.exports = (course, stepCallback) => {
                                 eachCallback(null);
                             }
                         });
-                    }
-                });
-            }
+                }
+            });
         }
 
         /* For each page ... */
@@ -153,20 +150,20 @@ module.exports = (course, stepCallback) => {
                 eachCallback(null);
             } else {
                 canvas.put(`/api/v1/courses/${course.info.canvasOU}/assignments/${assignment.id}`, {
-                    'assignment[description]': wrapHTML(assignment.description)
-                },
-                (err, changedAssignment) => {
-                    if (err) eachCallback(err);
-                    else {
-                        course.success('web-features-update',
-                        `ASSIGNMENT | ${assignment.name} HTML wrapped with the styling div.`);
-                        course.info['Updated HTML'].push({
-                            type: 'assignment',
-                            title: assignment.name
-                        });
-                        eachCallback(null);
-                    }
-                });
+                        'assignment[description]': wrapHTML(assignment.description)
+                    },
+                    (err, changedAssignment) => {
+                        if (err) eachCallback(err);
+                        else {
+                            course.success('web-features-update',
+                                `ASSIGNMENT | ${assignment.name} HTML wrapped with the styling div.`);
+                            course.info['Updated HTML'].push({
+                                type: 'assignment',
+                                title: assignment.name
+                            });
+                            eachCallback(null);
+                        }
+                    });
             }
         }
 
