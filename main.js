@@ -6,8 +6,6 @@ const canvas = require('canvas-wrapper');
 const asyncLib = require('async');
 
 module.exports = (course, stepCallback) => {
-    course.addModuleReport('web-features-update');
-    course.newInfo('Updated HTML', []);
 
     /* Give us the class for the course code */
     var courseCode = course.info.fileName.split(' ');
@@ -34,7 +32,7 @@ module.exports = (course, stepCallback) => {
         function setPage(page, eachCallback) {
             /* Get the page so we can get its body (which isn't included when listing all pages) */
             canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
-                if (err) course.throwErr('web-features-update', err);
+                if (err) course.error(err);
                 else {
                     /* Set the page with the new HTML */
                     canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
@@ -43,11 +41,10 @@ module.exports = (course, stepCallback) => {
                         (err2, changedPage) => {
                             if (err2) eachCallback(err2);
                             else {
-                                course.success('web-features-update',
-                                    `PAGE | ${page.title} HTML wrapped with a the styling div.`);
-                                course.info['Updated HTML'].push({
-                                    type: 'page',
-                                    title: page.title
+                                course.log('Web Features Implemented', {
+                                    'Name': changedPage.title,
+                                    'ID': changedPage.id,
+                                    'Type': 'Page'
                                 });
                                 eachCallback(null);
                             }
@@ -81,11 +78,10 @@ module.exports = (course, stepCallback) => {
                 (err, changedQuiz) => {
                     if (err) eachCallback(err);
                     else {
-                        course.success('web-features-update',
-                            `QUIZ | ${quiz.title} HTML wrapped with the styling div.`);
-                        course.info['Updated HTML'].push({
-                            type: 'quiz',
-                            title: quiz.title
+                        course.log('Web Features Implemented', {
+                            'Name': quiz.title,
+                            'ID': quiz.id,
+                            'Type': 'Quiz'
                         });
                         eachCallback(null);
                     }
@@ -116,11 +112,10 @@ module.exports = (course, stepCallback) => {
                 (err, changedDiscussion) => {
                     if (err) eachCallback(err);
                     else {
-                        course.success('web-features-update',
-                            `DISCUSSION | ${discussion.title} HTML wrapped with the styling div.`);
-                        course.info['Updated HTML'].push({
-                            type: 'discussion',
-                            title: discussion.title
+                        course.log('Web Features Implemented', {
+                            'Name': discussion.title,
+                            'ID': discussion.id,
+                            'Type': 'Discussion'
                         });
                         eachCallback(null);
                     }
@@ -155,11 +150,10 @@ module.exports = (course, stepCallback) => {
                     (err, changedAssignment) => {
                         if (err) eachCallback(err);
                         else {
-                            course.success('web-features-update',
-                                `ASSIGNMENT | ${assignment.name} HTML wrapped with the styling div.`);
-                            course.info['Updated HTML'].push({
-                                type: 'assignment',
-                                title: assignment.name
+                            course.log('Web Features Implemented', {
+                                'Name': assignment.title,
+                                'ID': assignment.id,
+                                'Type': 'Assignment'
                             });
                             eachCallback(null);
                         }
@@ -188,10 +182,10 @@ module.exports = (course, stepCallback) => {
 
     asyncLib.waterfall(functions, function (err, result) {
         if (err) {
-            course.throwErr('web-features-update', err)
+            course.error(err);
             stepCallback(null, course);
         } else {
-            course.success('web-features-update', 'HTML has been updated with the <div class="byui [coursecode]"> tag.')
+            course.message('All HTML updated with the <div class="byui [coursecode]"> tag.');
             stepCallback(null, course);
         }
     })
