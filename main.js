@@ -36,19 +36,18 @@ module.exports = (course, stepCallback) => {
                 else {
                     /* Set the page with the new HTML */
                     canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
-                            'wiki_page[body]': wrapHTML(pageDetails[0].body) // Wrap the HTML before sending it
-                        },
-                        (err2, changedPage) => {
-                            if (err2) eachCallback(err2);
-                            else {
-                                course.log('Web Features Implemented', {
-                                    'Name': changedPage.title,
-                                    'ID': changedPage.id,
-                                    'Type': 'Page'
-                                });
-                                eachCallback(null);
-                            }
-                        });
+                        'wiki_page[body]': wrapHTML(pageDetails[0].body) // Wrap the HTML before sending it
+                    }, (err2, changedPage) => {
+                        if (err2) eachCallback(err2);
+                        else {
+                            course.log('Web Features Implemented', {
+                                'Name': changedPage.title,
+                                'ID': changedPage.page_id,
+                                'Type': 'Page'
+                            });
+                            eachCallback(null);
+                        }
+                    });
                 }
             });
         }
@@ -73,19 +72,18 @@ module.exports = (course, stepCallback) => {
         /* Push the changed HTML to canvas */
         function setQuiz(quiz, eachCallback) {
             canvas.put(`/api/v1/courses/${course.info.canvasOU}/quizzes/${quiz.id}`, {
-                    'quiz[description]': wrapHTML(quiz.description) // Wrap the HTML before sending it
-                },
-                (err, changedQuiz) => {
-                    if (err) eachCallback(err);
-                    else {
-                        course.log('Web Features Implemented', {
-                            'Name': quiz.title,
-                            'ID': quiz.id,
-                            'Type': 'Quiz'
-                        });
-                        eachCallback(null);
-                    }
-                });
+                'quiz[description]': wrapHTML(quiz.description) // Wrap the HTML before sending it
+            }, (err, changedQuiz) => {
+                if (err) eachCallback(err);
+                else {
+                    course.log('Web Features Implemented', {
+                        'Name': quiz.title,
+                        'ID': quiz.id,
+                        'Type': 'Quiz'
+                    });
+                    eachCallback(null);
+                }
+            });
         }
 
         /* For each quiz ... */
@@ -107,19 +105,18 @@ module.exports = (course, stepCallback) => {
         /* Push the changed HTML to canvas */
         function setDiscussion(discussion, eachCallback) {
             canvas.put(`/api/v1/courses/${course.info.canvasOU}/discussion_topics/${discussion.id}`, {
-                    message: wrapHTML(discussion.message)
-                },
-                (err, changedDiscussion) => {
-                    if (err) eachCallback(err);
-                    else {
-                        course.log('Web Features Implemented', {
-                            'Name': discussion.title,
-                            'ID': discussion.id,
-                            'Type': 'Discussion'
-                        });
-                        eachCallback(null);
-                    }
-                });
+                message: wrapHTML(discussion.message)
+            }, (err, changedDiscussion) => {
+                if (err) eachCallback(err);
+                else {
+                    course.log('Web Features Implemented', {
+                        'Name': discussion.title,
+                        'ID': discussion.id,
+                        'Type': 'Discussion'
+                    });
+                    eachCallback(null);
+                }
+            });
         }
 
         /* For each discussion topic ... */
@@ -145,19 +142,18 @@ module.exports = (course, stepCallback) => {
                 eachCallback(null);
             } else {
                 canvas.put(`/api/v1/courses/${course.info.canvasOU}/assignments/${assignment.id}`, {
-                        'assignment[description]': wrapHTML(assignment.description)
-                    },
-                    (err, changedAssignment) => {
-                        if (err) eachCallback(err);
-                        else {
-                            course.log('Web Features Implemented', {
-                                'Name': assignment.title,
-                                'ID': assignment.id,
-                                'Type': 'Assignment'
-                            });
-                            eachCallback(null);
-                        }
-                    });
+                    'assignment[description]': wrapHTML(assignment.description)
+                }, (err, changedAssignment) => {
+                    if (err) eachCallback(err);
+                    else {
+                        course.log('Web Features Implemented', {
+                            'Name': assignment.title,
+                            'ID': assignment.id,
+                            'Type': 'Assignment'
+                        });
+                        eachCallback(null);
+                    }
+                });
             }
         }
 
