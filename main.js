@@ -34,6 +34,11 @@ module.exports = (course, stepCallback) => {
             canvas.get(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, (err, pageDetails) => {
                 if (err) course.error(err);
                 else {
+                    /* Skip homepage */
+                    if (page.front_page == true) {
+                        eachCallback(null);
+                        return;
+                    }
                     /* Set the page with the new HTML */
                     canvas.put(`/api/v1/courses/${course.info.canvasOU}/pages/${page.url}`, {
                         'wiki_page[body]': wrapHTML(pageDetails[0].body) // Wrap the HTML before sending it
