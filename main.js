@@ -1,5 +1,3 @@
-/*eslint-env node, es6*/
-
 /* Adds a <div class="byui"> around any HTML content in the pages, quizzes, discussins, and assignments */
 
 const canvas = require('canvas-wrapper');
@@ -189,5 +187,5 @@ module.exports = (course, stepCallback) => {
             course.message('All HTML updated with the <div class="byui [coursecode]"> tag.');
             stepCallback(null, course);
         }
-    })
+    });
 };
